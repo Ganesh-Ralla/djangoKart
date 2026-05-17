@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ecommerce</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <header class=" p-4 bg-green-500 text-white  fixed z-10 top-0 w-full">
+        <nav class="flex items-center justify-between px-12">
+            <a href="{% url 'home' %}" class=" text-2xl font-bold">DjangoKart</a>
+            <div class="flex items-center gap-4">
+                <a class="hover:font-bold" href="{% url 'home' %}">Home</a>
+                <a class="hover:font-bold" href="{% url 'product' %}">Products</a>
+                <a class="hover:font-bold" href="{% url 'cart' %}">Cart</a>
+                {% if request.user.is_authenticated %}
+                <a class="hover:font-bold" href="{% url 'profile' %}">Profile</a>
+                {% else %}
+                <a class="hover:font-bold" href="{% url 'login' %}">Login</a>
+                {% endif%}
+            </div>
+        </nav>
+    </header>
+    <main class=" mt-16 mb-12">
+        <div class="w-full h-auto">
+            <img src="{% static 'images/banner.png' %}" alt="" >
+        </div>
+
+        <p class=" p-4 px-12 font-bold text-3xl ">Popular Products</p>
+        <div class="p-4 px-12 grid grid-cols-5 items-center gap-8">
+            {% for product in products %}
+            <div class=" border border-gray-200 hover:shadow-lg rounded-xl">
+                <a href="{% url 'single_product' product.id %}">
+                    <img src="{{ product.thumbnail }}" class="h-50 mx-auto ">
+                </a>
+
+                <div class=" m-3">
+                    <p class=" my-2"><span class="p-2 bg-green-100 text-green-500 text-sm font-bold rounded-lg">{{ product.availability_status }}</span></p>
+                    <p class="font-bold">{{product.title}}</p>
+                    <p class=" flex items-center gap-1 items-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFF03"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <span class=" text-gray-500">{{ product.rating }}</span>
+                    </p>
+                    <p><span class="text-lg font-bold">₹{% widthratio product.price 1 85 %}</span> <span class=" text-red-500"> -{{product.discount_percentage}}% </span></p>
+                </div>
+                <a href="{% url 'add_to_cart' product.id %}" class="block text-center font-bold text-blue-400 border rounded-lg border-blue-300 m-3 p-2 hover:bg-blue-400 hover:text-white hover:cursor-pointer">Add to Cart</a>
+            </div>
+            {% endfor %}
+        </div>
+        
+    </main>
+    <footer class="bg-green-600 p-4 text-white">
+        <div class="flex items-start justify-between px-12 mb-4">
+            <div>
+                <p class="text-4xl font-bold">DJANGOKART</p>
+                <p>A practice project built while learning Django.</p>
+            </div>
+
+            <div class=" flex items-center gap-3">
+                <p class="font-bold">Check out more projects</p>
+                <a href="https://github.com/Ganesh-Ralla" class="underline">GitHub</a>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center mt-4">
+            <p>Designed by Ganesh Ralla © 2026</p>
+            <p>Made with Django</p>
+        </div>
+    </footer>
+</body>
+
+</html>

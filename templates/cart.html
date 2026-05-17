@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ecommerce</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <header class=" p-4 bg-green-500 text-white  fixed z-10 top-0 w-full">
+        <nav class="flex items-center justify-between px-12">
+            <a href="{% url 'home' %}" class=" text-2xl font-bold">DjangoKart</a>
+            <div class="flex items-center gap-4">
+                <a class="hover:font-bold" href="{% url 'home' %}">Home</a>
+                <a class="hover:font-bold" href="{% url 'product' %}">Products</a>
+                <a class="hover:font-bold" href="{% url 'cart' %}">Cart</a>
+                {% if request.user.is_authenticated %}
+                <a class="hover:font-bold" href="{% url 'profile' %}">Profile</a>
+                {% else %}
+                <a class="hover:font-bold" href="{% url 'login' %}">Login</a>
+                {% endif%}
+            </div>
+        </nav>
+    </header>
+    <main class=" mt-16">
+        {% if cart_items %}
+
+        <div class=" p-4 px-12">
+            <p class=" font-bold text-4xl">Your Cart</p>
+            <p class=" text-gray-500">Review your items and procced to checkout</p>
+            <div class=" flex gap-6 ">
+                <div class="my-4 flex-1 border border-gray-200 rounded-xl bg-white">
+
+                    <div class="border-b border-gray-200 p-4">
+                        <p class="text-lg font-bold">Order Items</p>
+                    </div>
+
+                    <div class="divide-y divide-gray-200">
+
+                        {% for item in cart_items %}
+                        <div class="flex items-center justify-between gap-6 p-4">
+
+                            <!-- Product Info -->
+                            <div class="flex items-center gap-4 flex-1">
+
+                                <img src="{{ item.products.thumbnail }}" alt=""
+                                    class="h-24 w-24 object-cover rounded-lg border border-gray-200">
+
+                                <div class="space-y-1">
+                                    <p class="font-semibold text-lg mb-2">{{ item.products.title }}</p>
+                                    <p class="text-sm text-green-500 mb-2 bg-green-100 rounded-xl inline p-2 font-bold">
+                                        {{ item.products.availability_status }}</p>
+                                    <p class="mb-2">
+                                        <span class="text-xl font-bold">₹{% widthratio item.products.price 1 85%}</span>
+                                        <span class="text-red-500 ml-2">-{{ item.products.discount_percentage }}%
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Quantity -->
+                            <div class="text-center min-w-[100px]">
+                                <p class="text-gray-500 text-sm">Quantity</p>
+                                <p class="font-semibold text-lg">{{ item.quantity }}</p>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="text-right min-w-[120px]">
+                                <p class="text-gray-500 text-sm">Price</p>
+                                <p class="text-xl font-bold">₹{% widthratio item.sub_total 1 85 %}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+                <div class="border border-gray-200 rounded-xl p-4 my-4 w-1/3 ">
+                    <p class=" font-bold text-2xl mb-4">Order Summary</p>
+                    <div class=" flex flex-col gap-2 mb-4">
+                        <p class=" flex items-center justify-between"><span>Total Items </span> <span>{{ items_count }}</span></p>
+<!--                        <p class=" flex items-center justify-between"><span>Discount</span> <span>12</span></p>-->
+                        <p class=" flex items-center justify-between"><span>Delivery</span> <span class=" font-bold text-green-500">FREE</span></p>
+                        
+                    </div>
+                    <hr class=" border-gray-200 mb-4">
+                    <div class=" mb-4 flex  items-center justify-between">
+                        <span>
+                            <p class=" text-xl font-bold">Total amount</p>
+                            <p class=" text-sm text-gray-500">(inclusive of all taxes)</p>
+                        </span>
+                        <p class=" font-bold text-2xl">₹{% widthratio total_price 1 85 %}</p>
+                    </div>
+
+                    <a href="{% url 'place_order' %}" class="block text-center bg-green-700 p-3 w-full rounded-lg text-lg text-white font-bold">Proceed to Checkout</a>
+
+                    <div class="my-4 bg-green-100 rounded-xl p-2 text-center">
+                        <p class=" font-bold ">Safe & Secure Payments</p>
+                        <p class=" text-gray-500">100% secure checkout experience</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        {% else %}
+        <div class="text-center my-4 ">
+            <img src="{% static 'images/EmptyCart.jpg' %}" alt="" class=" mx-auto">
+            <p class=" text-2xl font-bold text-blue-500">Oops! your cart is empty</p>
+            <a class=" text-blue-500 font-bold text-lg my-4" href="{% url 'product' %}">Click here to shop</a>
+        </div>
+        {% endif %}
+
+    </main>
+    <footer class="bg-green-600 p-4 text-white">
+        <div class="flex items-start justify-between px-12 mb-4">
+            <div>
+                <p class="text-4xl font-bold">DJANGOKART</p>
+                <p>A practice project built while learning Django.</p>
+            </div>
+
+            <div class=" flex items-center gap-3">
+                <p class="font-bold">Check out more projects</p>
+                <a href="https://github.com/Ganesh-Ralla" class="underline">GitHub</a>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center mt-4">
+            <p>Designed by Ganesh Ralla © 2026</p>
+            <p>Made with Django</p>
+        </div>
+    </footer>
+</body>
+
+</html>

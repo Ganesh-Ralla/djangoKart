@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ecommerce</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <header class=" p-4 bg-green-500 text-white  fixed z-10 top-0 w-full">
+        <nav class="flex items-center justify-between px-12">
+            <a href="{% url 'home' %}" class=" text-2xl font-bold">DjangoKart</a>
+            <div class="flex items-center gap-4">
+                <a class="hover:font-bold" href="{% url 'home' %}">Home</a>
+                <a class="hover:font-bold" href="{% url 'product' %}">Products</a>
+                <a class="hover:font-bold" href="{% url 'cart' %}">Cart</a>
+                {% if request.user.is_authenticated %}
+                <a class="hover:font-bold" href="{% url 'profile' %}">Profile</a>
+                {% else %}
+                <a class="hover:font-bold" href="{% url 'login' %}">Login</a>
+                {% endif%}
+            </div>
+        </nav>
+    </header>
+    <main class=" mt-16">
+        <div class="p-4 px-12 grid grid-cols-2 min-h-[80vh] items-start pt-14">
+            <div class=" mx-auto border border-gray-200 rounded-lg h-120">
+                <img src="{{ product.thumbnail }}" alt="{{product.title}}" class="h-full">
+            </div>
+            <div class="  w-full ">
+                <span class=" bg-green-100 text-green-500 rounded-lg p-2 font-bold"> {{product.availability_status}} </span>
+                <p class=" mt-4 font-bold text-4xl">{{product.title}}</p>
+                <p class=" flex items-center gap-2 my-2"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFF03"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                    <span>{{product.rating}}</span> 
+                </p>
+                
+                <p class="flex items-end gap-2">
+                    <span class=" text-3xl font-bold">₹{% widthratio product.price 1 85 %}</span>
+                    <span class="bg-red-100 py-1 px-2 rounded-lg text-red-500"> -{{product.discount_percentage}}% </span>
+                </p>
+                <hr class="border-gray-200 mt-4">
+                <p class=" font-bold text-2xl">Description</p>
+                <p class=" h-24"> {{product.description}} </p>
+                <div class=" my-4 flex items-center gap-4">
+                    <div class="font-bold flex items-center justify-evenly border rounded-lg border-gray-400 py-2 px-6 gap-4">
+                        <p class="w-full hover:bg-gray-200 hover:cursor-pointer">-</p>
+                        <p class="">1</p>
+                        <p class="w-full hover:bg-gray-200 hover:cursor-pointer">+</p>
+                    </div>
+                    <p class=" font-bold border bg-blue-500 rounded-lg py-2 px-6 text-white hover:cursor-pointer hover:text-blue-500 hover:bg-white">Add to Cart</p>
+                </div>
+                <hr class="border-gray-200 my-4">
+                <div class=" my-4 flex items-start gap-4">
+                    <div class="  p-2 rounded-lg">
+                        <p class=" font-bold">Free Delivery</p>
+                        <p class=" text-gray-500 text-sm">on order about ₹499</p>
+                    </div>
+                    <div class=" p-2 ">
+                        <p class=" font-bold">{{product.return_policy}}</p>
+                        <p class=" text-gray-500 text-sm">No questions asked</p>
+                    </div>
+                    <div class=" p-2">
+                        <p class=" font-bold">{{product.warranty_information}}</p>
+                        <p class=" text-gray-500 text-sm">Against manufacturing defects</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+<footer class="bg-green-600 p-4 text-white">
+        <div class="flex items-start justify-between px-12 mb-4">
+            <div>
+                <p class="text-4xl font-bold">DJANGOKART</p>
+                <p>A practice project built while learning Django.</p>
+            </div>
+
+            <div class=" flex items-center gap-3">
+                <p class="font-bold">Check out more projects</p>
+                <a href="https://github.com/Ganesh-Ralla" class="underline">GitHub</a>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center mt-4">
+            <p>Designed by Ganesh Ralla © 2026</p>
+            <p>Made with Django</p>
+        </div>
+    </footer>
+</body>
+
+</html>
