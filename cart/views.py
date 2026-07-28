@@ -43,3 +43,7 @@ def add_to_cart(request,pk):
         )
     return redirect('product')
 
+
+
+# def increase_quantity(request,pk):
+    

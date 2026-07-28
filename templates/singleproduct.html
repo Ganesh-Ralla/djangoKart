@@ -50,7 +50,7 @@
                         <p class="">1</p>
                         <p class="w-full hover:bg-gray-200 hover:cursor-pointer">+</p>
                     </div>
-                    <p class=" font-bold border bg-blue-500 rounded-lg py-2 px-6 text-white hover:cursor-pointer hover:text-blue-500 hover:bg-white">Add to Cart</p>
+                    <a href="{% url 'add_to_cart' product.id %} "   class=" font-bold border bg-blue-500 rounded-lg py-2 px-6 text-white hover:cursor-pointer hover:text-blue-500 hover:bg-white">Add to Cart</a>
                 </div>
                 <hr class="border-gray-200 my-4">
                 <div class=" my-4 flex items-start gap-4">

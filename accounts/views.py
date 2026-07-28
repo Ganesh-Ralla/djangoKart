@@ -6,9 +6,7 @@ from products.models import Product
 from orders.models import OrderItems,Order
 
 # Create your views here.
-def home(request):
-    products = Product.objects.all()[80:90]
-    return render(request,'index.html',{'products':products})
+
 
 def register(request):
     if request.method == 'GET':
