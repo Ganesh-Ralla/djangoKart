@@ -1,95 +1,384 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Ecommerce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.title }} | DjangoKart</title>
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body>
-    <header class=" p-4 bg-green-500 text-white  fixed z-10 top-0 w-full">
-        <nav class="flex items-center justify-between px-12">
-            <a href="{% url 'home' %}" class=" text-2xl font-bold">DjangoKart</a>
-            <div class="flex items-center gap-4">
-                <a class="hover:font-bold" href="{% url 'home' %}">Home</a>
-                <a class="hover:font-bold" href="{% url 'product' %}">Products</a>
-                <a class="hover:font-bold" href="{% url 'cart' %}">Cart</a>
-                {% if request.user.is_authenticated %}
-                <a class="hover:font-bold" href="{% url 'profile' %}">Profile</a>
-                {% else %}
-                <a class="hover:font-bold" href="{% url 'login' %}">Login</a>
-                {% endif%}
-            </div>
-        </nav>
-    </header>
-    <main class=" mt-16">
-        <div class="p-4 px-12 grid grid-cols-2 min-h-[80vh] items-start pt-14">
-            <div class=" mx-auto border border-gray-200 rounded-lg h-120">
-                <img src="{{ product.thumbnail }}" alt="{{product.title}}" class="h-full">
-            </div>
-            <div class="  w-full ">
-                <span class=" bg-green-100 text-green-500 rounded-lg p-2 font-bold"> {{product.availability_status}} </span>
-                <p class=" mt-4 font-bold text-4xl">{{product.title}}</p>
-                <p class=" flex items-center gap-2 my-2"> 
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFF03"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
-                    <span>{{product.rating}}</span> 
-                </p>
-                
-                <p class="flex items-end gap-2">
-                    <span class=" text-3xl font-bold">₹{% widthratio product.price 1 85 %}</span>
-                    <span class="bg-red-100 py-1 px-2 rounded-lg text-red-500"> -{{product.discount_percentage}}% </span>
-                </p>
-                <hr class="border-gray-200 mt-4">
-                <p class=" font-bold text-2xl">Description</p>
-                <p class=" h-24"> {{product.description}} </p>
-                <div class=" my-4 flex items-center gap-4">
-                    <div class="font-bold flex items-center justify-evenly border rounded-lg border-gray-400 py-2 px-6 gap-4">
-                        <p class="w-full hover:bg-gray-200 hover:cursor-pointer">-</p>
-                        <p class="">1</p>
-                        <p class="w-full hover:bg-gray-200 hover:cursor-pointer">+</p>
-                    </div>
-                    <a href="{% url 'add_to_cart' product.id %} "   class=" font-bold border bg-blue-500 rounded-lg py-2 px-6 text-white hover:cursor-pointer hover:text-blue-500 hover:bg-white">Add to Cart</a>
+<body class="bg-white text-gray-900">
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="mt-16">
+
+        <div class="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-12">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
+
+
+                <!-- ================= PRODUCT IMAGE ================= -->
+
+                <div class="bg-gray-50 border border-gray-200 rounded-2xl
+                            flex items-center justify-center
+                            p-6 md:p-10
+                            h-[400px] md:h-[520px]
+                            overflow-hidden">
+
+                    <img src="{{ product.thumbnail }}" alt="{{ product.title }}" class="w-full h-full object-contain
+                                hover:scale-105
+                                transition-transform duration-300">
+
                 </div>
-                <hr class="border-gray-200 my-4">
-                <div class=" my-4 flex items-start gap-4">
-                    <div class="  p-2 rounded-lg">
-                        <p class=" font-bold">Free Delivery</p>
-                        <p class=" text-gray-500 text-sm">on order about ₹499</p>
+
+
+                <!-- ================= PRODUCT INFORMATION ================= -->
+
+                <div class="flex flex-col">
+
+
+                    <!-- Availability -->
+
+                    <div>
+
+                        <span class="inline-block bg-green-100 text-green-700
+                                     text-sm font-semibold
+                                     px-3 py-1.5 rounded-lg">
+
+                            {{ product.availability_status }}
+
+                        </span>
+
                     </div>
-                    <div class=" p-2 ">
-                        <p class=" font-bold">{{product.return_policy}}</p>
-                        <p class=" text-gray-500 text-sm">No questions asked</p>
+
+
+                    <!-- Product Title -->
+
+                    <h1 class="mt-4 text-3xl md:text-4xl
+                               font-bold text-gray-900 leading-tight">
+
+                        {{ product.title }}
+
+                    </h1>
+
+
+                    <!-- Rating -->
+
+                    <div class="flex items-center gap-2 mt-3">
+
+                        <div class="flex items-center gap-1
+                                    bg-green-600 text-white
+                                    px-2.5 py-1 rounded-lg
+                                    text-sm font-semibold">
+
+                            <span>
+                                {{ product.rating }}
+                            </span>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-4 h-4">
+
+                                <path d="M12 2.5l2.9 5.88 6.49.94-4.7 4.58
+                                         1.11 6.47L12 17.34l-5.8 3.03
+                                         1.11-6.47-4.7-4.58
+                                         6.49-.94L12 2.5z" />
+
+                            </svg>
+
+                        </div>
+
+                        <span class="text-sm text-gray-500">
+                            Customer Rating
+                        </span>
+
                     </div>
-                    <div class=" p-2">
-                        <p class=" font-bold">{{product.warranty_information}}</p>
-                        <p class=" text-gray-500 text-sm">Against manufacturing defects</p>
+
+
+                    <!-- Price -->
+
+                    <div class="flex items-center gap-3 mt-6">
+
+                        <span class="text-3xl md:text-4xl
+                                     font-bold text-gray-900">
+
+                            ₹{% widthratio product.price 1 85 %}
+
+                        </span>
+
+                        <span class="bg-red-100 text-red-600
+                                     px-2.5 py-1 rounded-lg
+                                     text-sm font-semibold">
+
+                            {{ product.discount_percentage }}% OFF
+
+                        </span>
+
                     </div>
+
+
+                    <hr class="border-gray-200 my-6">
+
+
+                    <!-- ================= DESCRIPTION ================= -->
+
+                    <div>
+
+                        <h2 class="text-xl font-bold text-gray-900">
+                            Description
+                        </h2>
+
+                        <p class="mt-2 text-gray-600 leading-7">
+                            {{ product.description }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- ================= CART ================= -->
+
+                    <div class="flex flex-col sm:flex-row gap-4 mt-7">
+
+
+                        <!-- Quantity -->
+
+                        <div class="flex items-center justify-between
+                                    border border-gray-300
+                                    rounded-xl overflow-hidden
+                                    w-36">
+
+                            <button id="decrease-btn" type="button" class="w-11 h-11 text-xl font-semibold
+                                           hover:bg-gray-100
+                                           cursor-pointer transition">
+
+                                −
+
+                            </button>
+
+
+                            <span id="quantity" class="font-semibold">
+
+                                1
+
+                            </span>
+
+
+                            <button id="increase-btn" type="button" class="w-11 h-11 text-xl font-semibold
+                                           hover:bg-gray-100
+                                           cursor-pointer transition">
+
+                                +
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- Add To Cart -->
+
+                        <a href="{% url 'add_to_cart' product.id %}" class="flex-1 flex items-center justify-center
+                                  bg-blue-600 text-white font-semibold
+                                  h-11 px-8 rounded-xl
+                                  hover:bg-blue-700
+                                  active:scale-[0.98]
+                                  transition-all duration-200">
+
+                            Add to Cart
+
+                        </a>
+
+                    </div>
+
+
+                    <hr class="border-gray-200 my-7">
+
+
+                    <!-- ================= PRODUCT BENEFITS ================= -->
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+
+                        <!-- Delivery -->
+
+                        <div class="border border-gray-200
+                                    rounded-xl p-4
+                                    hover:bg-gray-50 transition">
+
+                            <div class="w-10 h-10
+                                        bg-blue-50 rounded-lg
+                                        flex items-center justify-center
+                                        mb-3 text-xl">
+
+                                🚚
+
+                            </div>
+
+                            <p class="font-semibold text-gray-900">
+                                Free Delivery
+                            </p>
+
+                            <p class="text-gray-500 text-sm mt-1">
+                                On orders above ₹499
+                            </p>
+
+                        </div>
+
+
+                        <!-- Return Policy -->
+
+                        <div class="border border-gray-200
+                                    rounded-xl p-4
+                                    hover:bg-gray-50 transition">
+
+                            <div class="w-10 h-10
+                                        bg-green-50 rounded-lg
+                                        flex items-center justify-center
+                                        mb-3 text-xl">
+
+                                ↩️
+
+                            </div>
+
+                            <p class="font-semibold text-gray-900">
+                                {{ product.return_policy }}
+                            </p>
+
+                            <p class="text-gray-500 text-sm mt-1">
+                                Return policy
+                            </p>
+
+                        </div>
+
+
+                        <!-- Warranty -->
+
+                        <div class="border border-gray-200
+                                    rounded-xl p-4
+                                    hover:bg-gray-50 transition">
+
+                            <div class="w-10 h-10
+                                        bg-orange-50 rounded-lg
+                                        flex items-center justify-center
+                                        mb-3 text-xl">
+
+                                🛡️
+
+                            </div>
+
+                            <p class="font-semibold text-gray-900">
+                                {{ product.warranty_information }}
+                            </p>
+
+                            <p class="text-gray-500 text-sm mt-1">
+                                Product warranty
+                            </p>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
 
         </div>
 
     </main>
-<footer class="bg-green-600 p-4 text-white">
-        <div class="flex items-start justify-between px-12 mb-4">
-            <div>
-                <p class="text-4xl font-bold">DJANGOKART</p>
-                <p>A practice project built while learning Django.</p>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="bg-green-600 text-white mt-10">
+
+        <div class="max-w-7xl mx-auto px-6 py-8">
+
+            <div class="flex flex-col md:flex-row justify-between gap-8">
+
+                <div>
+
+                    <h2 class="text-3xl font-bold">
+                        DJANGOKART
+                    </h2>
+
+                    <p class="mt-2">
+                        A practice project built while learning Django.
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <p class="font-semibold">
+                        Check out more projects
+                    </p>
+
+                    <a href="https://github.com/Ganesh-Ralla" target="_blank" rel="noopener noreferrer"
+                        class="underline">
+
+                        GitHub
+
+                    </a>
+
+                </div>
+
             </div>
 
-            <div class=" flex items-center gap-3">
-                <p class="font-bold">Check out more projects</p>
-                <a href="https://github.com/Ganesh-Ralla" class="underline">GitHub</a>
+
+            <hr class="my-6 border-green-400">
+
+
+            <div class="text-center text-sm">
+
+                <p>
+                    Designed by Ganesh Ralla © 2026
+                </p>
+
+                <p class="mt-1">
+                    Made with Django
+                </p>
+
             </div>
+
         </div>
-        <hr>
-        <div class="text-center mt-4">
-            <p>Designed by Ganesh Ralla © 2026</p>
-            <p>Made with Django</p>
-        </div>
+
     </footer>
-</body>
 
+    <script>
+
+        const btn = document.getElementById("menu-btn");
+        const menu = document.getElementById("mobile-menu");
+        const openIcon = document.getElementById("open-icon");
+        const closeIcon = document.getElementById("close-icon");
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+            openIcon.classList.toggle("hidden");
+            closeIcon.classList.toggle("hidden");
+        });
+
+
+        // Quantity Selector
+        const decreaseBtn = document.getElementById("decrease-btn");
+        const increaseBtn = document.getElementById("increase-btn");
+        const quantityElement = document.getElementById("quantity");
+        
+        let quantity = 1;
+        
+        increaseBtn.addEventListener("click", () => {
+            quantity++;
+            quantityElement.textContent = quantity;
+        });
+
+        decreaseBtn.addEventListener("click", () => {
+            if (quantity > 1) {
+                quantity--;
+                quantityElement.textContent = quantity;
+            }
+        });
+
+    </script>
+</body>
 </html>

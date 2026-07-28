@@ -1,138 +1,222 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Ecommerce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DjangoKart | Cart</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body>
-    <header class=" p-4 bg-green-500 text-white  fixed z-10 top-0 w-full">
-        <nav class="flex items-center justify-between px-12">
-            <a href="{% url 'home' %}" class=" text-2xl font-bold">DjangoKart</a>
-            <div class="flex items-center gap-4">
-                <a class="hover:font-bold" href="{% url 'home' %}">Home</a>
-                <a class="hover:font-bold" href="{% url 'product' %}">Products</a>
-                <a class="hover:font-bold" href="{% url 'cart' %}">Cart</a>
+<body class="bg-gray-50 text-gray-900">
+    <header class="bg-green-500 text-white fixed top-0 w-full z-50 shadow">
+        <nav class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+            <a href="{% url 'home' %}" class="text-2xl font-bold">DjangoKart</a>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-8 font-medium">
+                <a href="{% url 'home' %}" class="hover:text-green-100 transition">Home</a>
+                <a href="{% url 'product' %}" class="hover:text-green-100 transition">Products</a>
+                <a href="{% url 'cart' %}" class="font-bold border-b-2 border-white pb-1">Cart</a>
                 {% if request.user.is_authenticated %}
-                <a class="hover:font-bold" href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'profile' %}" class="hover:text-green-100 transition">Profile</a>
                 {% else %}
-                <a class="hover:font-bold" href="{% url 'login' %}">Login</a>
-                {% endif%}
+                <a href="{% url 'login' %}" class="hover:text-green-100 transition">Login</a>
+                {% endif %}
             </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" type="button" aria-label="Toggle navigation menu" class="md:hidden cursor-pointer">
+                <!-- Open Icon -->
+                <svg id="open-icon" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+
+                <!-- Close Icon -->
+                <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 hidden" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </nav>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-green-500 border-t border-green-400">
+            <a href="{% url 'home' %}" class="block px-6 py-3 hover:bg-green-600">Home</a>
+            <a href="{% url 'product' %}" class="block px-6 py-3 hover:bg-green-600">Products</a>
+            <a href="{% url 'cart' %}" class="block px-6 py-3 bg-green-600 font-semibold">Cart</a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="block px-6 py-3 hover:bg-green-600">Profile</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="block px-6 py-3 hover:bg-green-600">Login</a>
+            {% endif %}
+        </div>
     </header>
-    <main class=" mt-16">
+
+    <main class="pt-16 min-h-[80vh]">
         {% if cart_items %}
+        <section class="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
+            <div class="mb-7">
+                <h1 class="font-bold text-3xl md:text-4xl">Your Cart</h1>
+                <p class="text-gray-500 mt-2">Review your items and proceed to checkout</p>
+            </div>
 
-        <div class=" p-4 px-12">
-            <p class=" font-bold text-4xl">Your Cart</p>
-            <p class=" text-gray-500">Review your items and procced to checkout</p>
-            <div class=" flex gap-6 ">
-                <div class="my-4 flex-1 border border-gray-200 rounded-xl bg-white">
-
-                    <div class="border-b border-gray-200 p-4">
-                        <p class="text-lg font-bold">Order Items</p>
+            <div class="flex flex-col lg:flex-row items-start gap-6">
+                <div class="w-full lg:flex-1 bg-white border border-gray-200 rounded-2xl overflow-hidden">
+                    <div class="flex items-center justify-between px-5 md:px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-bold">Order Items</h2>
+                        <span class="text-sm text-gray-500">{{ items_count }} items</span>
                     </div>
 
                     <div class="divide-y divide-gray-200">
-
                         {% for item in cart_items %}
-                        <div class="flex items-center justify-between gap-6 p-4">
+                        <div class="p-4 md:p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <a href="{% url 'single_product' item.products.id %}" class="shrink-0">
+                                        <div
+                                            class="w-24 h-24 md:w-28 md:h-28 bg-gray-50 border border-gray-200 rounded-xl p-2">
+                                            <img src="{{ item.products.thumbnail }}" alt="{{ item.products.title }}"
+                                                class="w-full h-full object-contain">
+                                        </div>
+                                    </a>
 
-                            <!-- Product Info -->
-                            <div class="flex items-center gap-4 flex-1">
-
-                                <img src="{{ item.products.thumbnail }}" alt=""
-                                    class="h-24 w-24 object-cover rounded-lg border border-gray-200">
-
-                                <div class="space-y-1">
-                                    <p class="font-semibold text-lg mb-2">{{ item.products.title }}</p>
-                                    <p class="text-sm text-green-500 mb-2 bg-green-100 rounded-xl inline p-2 font-bold">
-                                        {{ item.products.availability_status }}</p>
-                                    <p class="mb-2">
-                                        <span class="text-xl font-bold">₹{% widthratio item.products.price 1 85%}</span>
-                                        <span class="text-red-500 ml-2">-{{ item.products.discount_percentage }}%
-                                        </span>
-                                    </p>
+                                    <div class="min-w-0">
+                                        <a href="{% url 'single_product' item.products.id %}">
+                                            <h3
+                                                class="font-semibold md:text-lg line-clamp-2 hover:text-green-600 transition">
+                                                {{ item.products.title }}</h3>
+                                        </a>
+                                        <span
+                                            class="inline-block mt-2 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-lg">{{
+                                            item.products.availability_status }}</span>
+                                        <div class="flex flex-wrap items-center gap-2 mt-3">
+                                            <span class="text-lg md:text-xl font-bold">₹{% widthratio
+                                                item.products.price 1 85 %}</span>
+                                            <span class="text-red-500 text-sm font-medium">{{
+                                                item.products.discount_percentage }}% OFF</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Quantity -->
-                            <div class="text-center min-w-[100px]">
-                                <p class="text-gray-500 text-sm">Quantity</p>
-                                <p class="font-semibold text-lg">{{ item.quantity }}</p>
-                            </div>
-
-                            <!-- Total -->
-                            <div class="text-right min-w-[120px]">
-                                <p class="text-gray-500 text-sm">Price</p>
-                                <p class="text-xl font-bold">₹{% widthratio item.sub_total 1 85 %}</p>
+                                <div
+                                    class="flex items-center justify-between sm:justify-end gap-8 md:gap-12 pl-28 sm:pl-0">
+                                    <div class="text-center">
+                                        <p class="text-gray-500 text-xs mb-1">Quantity</p>
+                                        <div
+                                            class="min-w-10 h-9 px-3 flex items-center justify-center bg-gray-100 rounded-lg font-semibold">
+                                            {{ item.quantity }}</div>
+                                    </div>
+                                    <div class="text-right min-w-[100px]">
+                                        <p class="text-gray-500 text-xs mb-1">Total</p>
+                                        <p class="text-lg md:text-xl font-bold">₹{% widthratio item.sub_total 1 85 %}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
-
-                    </div>
-
-                </div>
-                <div class="border border-gray-200 rounded-xl p-4 my-4 w-1/3 ">
-                    <p class=" font-bold text-2xl mb-4">Order Summary</p>
-                    <div class=" flex flex-col gap-2 mb-4">
-                        <p class=" flex items-center justify-between"><span>Total Items </span> <span>{{ items_count }}</span></p>
-<!--                        <p class=" flex items-center justify-between"><span>Discount</span> <span>12</span></p>-->
-                        <p class=" flex items-center justify-between"><span>Delivery</span> <span class=" font-bold text-green-500">FREE</span></p>
-                        
-                    </div>
-                    <hr class=" border-gray-200 mb-4">
-                    <div class=" mb-4 flex  items-center justify-between">
-                        <span>
-                            <p class=" text-xl font-bold">Total amount</p>
-                            <p class=" text-sm text-gray-500">(inclusive of all taxes)</p>
-                        </span>
-                        <p class=" font-bold text-2xl">₹{% widthratio total_price 1 85 %}</p>
-                    </div>
-
-                    <a href="{% url 'place_order' %}" class="block text-center bg-green-700 p-3 w-full rounded-lg text-lg text-white font-bold">Proceed to Checkout</a>
-
-                    <div class="my-4 bg-green-100 rounded-xl p-2 text-center">
-                        <p class=" font-bold ">Safe & Secure Payments</p>
-                        <p class=" text-gray-500">100% secure checkout experience</p>
                     </div>
                 </div>
+
+
+                <aside
+                    class="w-full lg:w-[360px] bg-white border border-gray-200 rounded-2xl p-5 md:p-6 lg:sticky lg:top-24">
+                    <h2 class="font-bold text-xl md:text-2xl mb-6">Order Summary</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Total Items</span>
+                            <span class="font-semibold">{{ items_count }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Delivery</span>
+                            <span class="font-bold text-green-600">FREE</span>
+                        </div>
+                    </div>
+
+                    <hr class="border-gray-200 my-6">
+                    <div class="flex items-end justify-between gap-4">
+                        <div>
+                            <p class="text-lg font-bold">Total Amount</p>
+                            <p class="text-xs text-gray-500 mt-1">Inclusive of all taxes</p>
+                        </div>
+                        <p class="font-bold text-2xl">₹{% widthratio total_price 1 85 %}</p>
+                    </div>
+
+                    <a href="{% url 'place_order' %}"
+                        class="mt-6 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-4 rounded-xl transition-colors duration-200">Proceed
+                        to Checkout </a>
+
+                    <div class="mt-5 bg-green-50 border border-green-100 rounded-xl p-4 text-center">
+                        <div class="flex justify-center mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" class="w-6 h-6 text-green-600">
+                                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
+
+                        <p class="font-semibold text-sm">Safe & Secure Payments</p>
+                        <p class="text-gray-500 text-xs mt-1">100% secure checkout experience</p>
+                    </div>
+
+                    <a href="{% url 'product' %}"
+                        class="mt-4 block text-center text-green-600 hover:text-green-700 text-sm font-semibold"> ←
+                        Continue Shopping </a>
+                </aside>
             </div>
-
-        </div>
-
-
+        </section>
         {% else %}
-        <div class="text-center my-4 ">
-            <img src="{% static 'images/EmptyCart.jpg' %}" alt="" class=" mx-auto">
-            <p class=" text-2xl font-bold text-blue-500">Oops! your cart is empty</p>
-            <a class=" text-blue-500 font-bold text-lg my-4" href="{% url 'product' %}">Click here to shop</a>
-        </div>
+        <section class="max-w-7xl mx-auto px-4 min-h-[70vh] flex items-center justify-center">
+            <div class="text-center">
+                <img src="{% static 'images/EmptyCart.jpg' %}" alt="Empty cart"
+                    class="mx-auto w-full max-w-sm object-contain">
+                <h1 class="text-2xl md:text-3xl font-bold mt-5">Your cart is empty</h1>
+                <p class="text-gray-500 mt-2">Looks like you haven't added anything to your cart yet.</p>
+                <a href="{% url 'product' %}"
+                    class="inline-block mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors">Start
+                    Shopping</a>
+            </div>
+        </section>
         {% endif %}
-
     </main>
-    <footer class="bg-green-600 p-4 text-white">
-        <div class="flex items-start justify-between px-12 mb-4">
-            <div>
-                <p class="text-4xl font-bold">DJANGOKART</p>
-                <p>A practice project built while learning Django.</p>
-            </div>
 
-            <div class=" flex items-center gap-3">
-                <p class="font-bold">Check out more projects</p>
-                <a href="https://github.com/Ganesh-Ralla" class="underline">GitHub</a>
+    <footer class="bg-green-600 text-white mt-10">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between gap-8">
+                <div>
+                    <h2 class="text-3xl font-bold">DJANGOKART</h2>
+                    <p class="mt-2 text-green-50">A practice project built while learning Django.</p>
+                </div>
+                <div>
+                    <p class="font-semibold">Check out more projects</p>
+                    <a href="https://github.com/Ganesh-Ralla" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 underline hover:text-green-100">GitHub</a>
+                </div>
             </div>
-        </div>
-        <hr>
-        <div class="text-center mt-4">
-            <p>Designed by Ganesh Ralla © 2026</p>
-            <p>Made with Django</p>
+            <hr class="my-6 border-green-500">
+            <div class="text-center text-sm text-green-50">
+                <p>Designed by Ganesh Ralla © 2026</p>
+                <p class="mt-1">Made with Django</p>
+            </div>
         </div>
     </footer>
+
+    <script>
+        const btn = document.getElementById("menu-btn");
+        const menu = document.getElementById("mobile-menu");
+        const openIcon = document.getElementById("open-icon");
+        const closeIcon = document.getElementById("close-icon");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+            openIcon.classList.toggle("hidden");
+            closeIcon.classList.toggle("hidden");
+        });
+    </script>
+
 </body>
 
 </html>
